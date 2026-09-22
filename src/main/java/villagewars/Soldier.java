@@ -11,11 +11,11 @@ public abstract class Soldier extends PathAwareEntity {
     public Soldier(EntityType<? extends PathAwareEntity> entityType, World world) {
 
         super(entityType, world);
-        System.out.println("isCustomNameVisible: " + this.isCustomNameVisible());
+
     }
     public void tick(){
         super.tick();
-        System.out.println(this.isCustomNameVisible());
+        // System.out.println(this.isCustomNameVisible());
     }
 
 

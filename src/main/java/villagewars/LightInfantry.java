@@ -27,7 +27,7 @@ public class LightInfantry extends Soldier{
     }
     @Override
     public Identifier getTexture(){
-        return Identifier.of(VillageWars.MOD_ID,"textures/entity/light_infantry_1.png");
+        return Identifier.of(VillageWars.MOD_ID,"textures/entity/light_infantry_3.png");
     }
 
 

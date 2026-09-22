@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
@@ -47,6 +48,14 @@ public class VillageWars implements ModInitializer {
 	public void onInitialize() {
 		ModEntities.registerAll();
 
+
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+			SERVER = server;
+			handler.player.sendMessage(
+					Text.literal("VillagerWars załadowany!"), false
+			);
+		});
+
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 
 			for (State s : allStates) {
@@ -56,12 +65,7 @@ public class VillageWars implements ModInitializer {
 		});
 
 
-		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-			SERVER = server;
-			handler.player.sendMessage(
-					Text.literal("VillagerWars załadowany!"), false
-			);
-		});
+
 
 
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
