@@ -38,6 +38,8 @@ public class SoldierEntityModel extends BipedEntityModel<SoldierRenderState> {
         this.nose.setAngles(this.head.pitch, this.head.yaw, this.head.roll);
     }
 
+
+
     public static TexturedModelData getTexturedModelData() {
         ModelData modelData = BipedEntityModel.getModelData(new Dilation(0.0F), 0.0F);
 
