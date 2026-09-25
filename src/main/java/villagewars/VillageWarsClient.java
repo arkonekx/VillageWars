@@ -10,6 +10,6 @@ public class VillageWarsClient implements ClientModInitializer {
     public void onInitializeClient() {
         EntityRendererFactories.register(ModEntities.LIGHT_INFANTRY, SoldierEntityRenderer::new);
         EntityModelLayerRegistry.registerModelLayer(ModEntities.SOLDIER, SoldierEntityModel::getTexturedModelData);
-        EntityRendererFactories.register(ModEntities.LIGHT_INFANTRY, SoldierEntityRenderer::new);
+
     }
 }

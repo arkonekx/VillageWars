@@ -6,10 +6,10 @@ import net.minecraft.world.World;
 
 public class LightInfantry extends Soldier{
 
-    public static double BASE_SPEED = 0.2D;
-    public static double BASE_ARMOR = 5;
-    public static double BASE_HEALTH = 20;
-    public static double BASE_ATTACK = 1.4;
+    public static final double BASE_SPEED = 0.2D;
+    public static final double BASE_ARMOR = 5;
+    public static final double BASE_HEALTH = 20;
+    public static final double BASE_ATTACK = 1.4;
 
 
     public LightInfantry(EntityType<LightInfantry> entityType, World world) {
