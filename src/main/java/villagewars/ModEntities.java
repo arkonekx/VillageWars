@@ -1,6 +1,7 @@
 package villagewars;
 
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -11,7 +12,8 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 
 public class ModEntities {
-
+    public static final EntityModelLayer SOLDIER =
+            new EntityModelLayer(Identifier.of(VillageWars.MOD_ID, "soldier"), "main");
 
     public static final RegistryKey<EntityType<?>> LIGHT_INFANTRY_KEY = RegistryKey.of(
             RegistryKeys.ENTITY_TYPE,

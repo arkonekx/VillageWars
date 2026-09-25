@@ -7,10 +7,10 @@ import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.VillagerResemblingModel;
 import net.minecraft.util.Identifier;
 
-public class SoldierEntityRenderer<T extends Soldier> extends MobEntityRenderer<T, SoldierRenderState, VillagerResemblingModel> {
+public class SoldierEntityRenderer<T extends Soldier> extends MobEntityRenderer<T, SoldierRenderState, SoldierEntityModel> {
 
     public SoldierEntityRenderer(EntityRendererFactory.Context context){
-        super(context, new VillagerResemblingModel(context.getPart(EntityModelLayers.VILLAGER)),0.5F);
+        super(context, new SoldierEntityModel(context.getPart(ModEntities.SOLDIER)), 0.5F);
 
     }
 
