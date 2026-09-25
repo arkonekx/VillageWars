@@ -32,10 +32,10 @@ public class ModEntities {
 
     public static void registerAll(){
         FabricDefaultAttributeRegistry.register(LIGHT_INFANTRY, LightInfantry.createMobAttributes()
-                .add(EntityAttributes.MAX_HEALTH,20.0)
-                .add(EntityAttributes.MOVEMENT_SPEED,0.2)
-                .add(EntityAttributes.ARMOR,5.0)
-                .add(EntityAttributes.ATTACK_DAMAGE,1.4)
+                .add(EntityAttributes.MAX_HEALTH,LightInfantry.BASE_HEALTH)
+                .add(EntityAttributes.MOVEMENT_SPEED,LightInfantry.BASE_SPEED)
+                .add(EntityAttributes.ARMOR,LightInfantry.BASE_ARMOR)
+                .add(EntityAttributes.ATTACK_DAMAGE,LightInfantry.BASE_ATTACK)
 
 
 
