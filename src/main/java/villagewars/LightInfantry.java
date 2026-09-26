@@ -6,7 +6,7 @@ import net.minecraft.world.World;
 
 public class LightInfantry extends Soldier{
 
-    public static final double BASE_SPEED = 0.2D;
+    public static final double BASE_SPEED = 0.2;
     public static final double BASE_ARMOR = 5;
     public static final double BASE_HEALTH = 20;
     public static final double BASE_ATTACK = 1.4;
@@ -15,25 +15,11 @@ public class LightInfantry extends Soldier{
     public LightInfantry(EntityType<LightInfantry> entityType, World world) {
         super(entityType, world);
     }
-    @Override
-    public double getBaseArmor(){
-        return 5;
-    }
-    @Override
-    public double getBaseMaxHealth(){
-        return 20;
-    }
-    @Override
-    public double getBaseMovementSpeed(){
-        return 0.2;
-    }
-    @Override
-    public double getBaseAttackDamage(){
-        return 1.4;
-    }
+
+
     @Override
     public Identifier getTexture(){
-        return Identifier.of(VillageWars.MOD_ID,"textures/entity/light_infantry_biped_5.png");
+        return Identifier.of(VillageWars.MOD_ID,"textures/entity/light_infantry_biped_medieval.png");
     }
 
 

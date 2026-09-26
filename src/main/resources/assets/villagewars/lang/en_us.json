@@ -1,4 +1,5 @@
 {
-  "entity.villagewars.light_infantry": "Light Infantry"
+  "entity.villagewars.light_infantry": "Light Infantry",
+  "entity.villagewars.heavy_infantry": "Heavy Infantry"
 
 }

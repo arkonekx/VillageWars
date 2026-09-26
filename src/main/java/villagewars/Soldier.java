@@ -34,10 +34,7 @@ public abstract class Soldier extends PathAwareEntity {
 
 
     public abstract Identifier getTexture();
-    public abstract double getBaseMaxHealth();
-    public abstract double getBaseMovementSpeed();
-    public abstract double getBaseArmor();
-    public abstract double getBaseAttackDamage();
+
 
 
 }

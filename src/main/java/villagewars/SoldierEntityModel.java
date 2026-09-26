@@ -20,9 +20,9 @@ public class SoldierEntityModel extends BipedEntityModel<SoldierRenderState> {
     public void setAngles(SoldierRenderState state) {
         super.setAngles(state);
 
-        // A villager-like silhouette without changing the existing 64x64 UV layout.
-        this.body.xScale = 1.25F; // 8 -> 10 model units wide
-        this.body.zScale = 1.5F;  // 4 -> 6 model units deep
+
+        this.body.xScale = 1.25F;
+        this.body.zScale = 1.5F;
         this.rightArm.originX = -6.0F;
         this.leftArm.originX = 6.0F;
 
@@ -33,7 +33,7 @@ public class SoldierEntityModel extends BipedEntityModel<SoldierRenderState> {
         this.hat.yScale = this.head.yScale;
         this.hat.zScale = this.head.zScale;
 
-        // The nose follows the head's motion but does not inherit its scale.
+
         this.nose.setOrigin(this.head.originX, this.head.originY, this.head.originZ);
         this.nose.setAngles(this.head.pitch, this.head.yaw, this.head.roll);
     }
