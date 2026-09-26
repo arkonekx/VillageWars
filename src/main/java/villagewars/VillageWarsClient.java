@@ -8,8 +8,12 @@ import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.util.Identifier;
 
 public class VillageWarsClient implements ClientModInitializer {
-    public static final EntityModelLayer SOLDIER =
-            new EntityModelLayer(Identifier.of(VillageWars.MOD_ID, "soldier"), "main");
+    public static final EntityModelLayer LIGHT_MODEL_LAYER =
+            new EntityModelLayer(Identifier.of(VillageWars.MOD_ID, "light_infantry"), "main");
+    public static final EntityModelLayer HEAVY_MODEL_LAYER =
+            new EntityModelLayer(Identifier.of(VillageWars.MOD_ID, "heavy_infantry"), "main");
+    public static final EntityModelLayer ARCHER_MODEL_LAYER =
+            new EntityModelLayer(Identifier.of(VillageWars.MOD_ID, "archer"), "main");
 
     @Override
     public void onInitializeClient() {
@@ -31,7 +35,9 @@ public class VillageWarsClient implements ClientModInitializer {
                         new ArcherModel(ctx.getPart(ARCHER_MODEL_LAYER))
                 )
         );
-        EntityModelLayerRegistry.registerModelLayer(SOLDIER, SoldierEntityModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(LIGHT_MODEL_LAYER, SoldierEntityModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(HEAVY_MODEL_LAYER, ArcherModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(ARCHER_MODEL_LAYER, HeavyInfantryModel::getTexturedModelData);
 
     }
 }

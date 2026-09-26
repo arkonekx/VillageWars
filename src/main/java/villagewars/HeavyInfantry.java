@@ -18,6 +18,6 @@ public class HeavyInfantry extends Soldier{
 
     @Override
     public Identifier getTexture() {
-        return Identifier.of(VillageWars.MOD_ID,"textures/entity/light_infantry_biped_5.png");
+        return Identifier.of(VillageWars.MOD_ID,"textures/entity/heavy_infantry.png");
     }
 }
