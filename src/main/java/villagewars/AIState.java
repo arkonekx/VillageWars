@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 
 public class AIState extends State{
@@ -13,14 +14,16 @@ public class AIState extends State{
     private static final Logger LOGGER = LoggerFactory.getLogger("AIState");
     private int ticksUntilNextAction  = 0;
     private Personality personality;
+    private UUID stateId;
 
 
 
 
 
 
-    public AIState(String name) {
+    public AIState(UUID Id, String name) {
         super(name);
+        this.stateId = Id;
 
         Personality[] personalities = Personality.values();
         this.personality = personalities[ czynnikLosowy.nextInt(personalities.length)];
@@ -30,27 +33,27 @@ public class AIState extends State{
         return 10 + czynnikLosowy.nextInt(10);
     }
     public void tick(){
-
-        ticksUntilNextAction--;
-        if(ticksUntilNextAction>0){
-            return;
-        }
-
-            List<State> neighbours = this.findNeighbours(VillageWars.allStates);
-            State target = findBestTarget(neighbours);
-        LOGGER.info("Target: " + (target != null ? target.getName() : "NULL"));
-            if (target != null) {
-                double score = calculateAttackScore(neighbours, target);
-                LOGGER.info(String.valueOf(score));
-
-                if (score > 15) {  // próg do dostrojenia później
-                    // atakuj
-                    LOGGER.info(this.getName() + " atakuje " + target.getName());
-
-                }
-            }
-            ticksUntilNextAction = randomInterval();
-
+//
+//        ticksUntilNextAction--;
+//        if(ticksUntilNextAction>0){
+//            return;
+//        }
+//
+//            List<State> neighbours = this.findNeighbours(VillageWars.allStates);
+//            State target = findBestTarget(neighbours);
+//        LOGGER.info("Target: " + (target != null ? target.getName() : "NULL"));
+//            if (target != null) {
+//                double score = calculateAttackScore(neighbours, target);
+//                LOGGER.info(String.valueOf(score));
+//
+//                if (score > 15) {  // próg do dostrojenia później
+//                    // atakuj
+//                    LOGGER.info(this.getName() + " atakuje " + target.getName());
+//
+//                }
+//            }
+//            ticksUntilNextAction = randomInterval();
+//
     }
 
 
@@ -65,14 +68,14 @@ public class AIState extends State{
     }
 
     public Double averageVillagers(List<State> neighbours){
-        int total = 0;
+        double total = 0;
         for(State s: neighbours){
 
                 total += s.getTotalVillagers();
 
         }
-        double avgVillagers = total / neighbours.size();
-        return avgVillagers;
+        return total / neighbours.size();
+
     }
     public double calculateAttackScore(List<State> neighbours,State target){
         double score = 100;

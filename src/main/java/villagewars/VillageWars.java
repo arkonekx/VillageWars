@@ -6,6 +6,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -14,25 +15,30 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.StructureTags;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.structure.StructureStart;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.Heightmap;
+import net.minecraft.world.chunk.Chunk;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 public class VillageWars implements ModInitializer {
 
-	public static List<State> allStates = new ArrayList<>();
-	public static List<Village> allVillages = new ArrayList<>();
-
+	public static Map<State,UUID> states = new HashMap<>();
+	public static Map<VillageKey,UUID> owners = new HashMap<>();
+	public static Map<VillageKey, Village> villages = new HashMap<>();
 	public static final String MOD_ID = "villagewars";
 	public static final AttachmentType<String> OWNER_STATE = AttachmentRegistry.create(
 			Identifier.of(MOD_ID, "owner_state"),
@@ -51,83 +57,54 @@ public class VillageWars implements ModInitializer {
 		ModEntities.registerAll();
 
 
+//		ServerTickEvents.END_SERVER_TICK.register(server -> {
+//
+//			for (State s : owners) {
+//				s.tick();
+//			}
+//
+//		});
+
+		ServerChunkEvents.CHUNK_LOAD.register((world, chunk)-> {
+
+			var structures = world.getRegistryManager().getOrThrow(RegistryKeys.STRUCTURE);
+
+			var villageStarts = world.getStructureAccessor().getStructureStarts(
+					chunk.getPos(),
+					structure -> structures.getEntry(structure).isIn(StructureTags.VILLAGE)
+			);
+
+			for (StructureStart start : villageStarts) {
 
 
-		ServerTickEvents.END_SERVER_TICK.register(server -> {
+    VillageKey key = new VillageKey(world.getRegistryKey(), start.getPos());
+    if (villages.containsKey(key)) continue;
 
-			for (State s : allStates) {
-				s.tick();
-			}
+    BlockPos center = start.getBoundingBox().getCenter();
+
+
+
+    Village village = new Village(center, world);
+    villages.put(key, village);
+	UUID stateId = UUID.randomUUID();
+	State state = new AIState(stateId,village.getName()+" State");
+	owners.put(key,stateId);
+	states.put(state,stateId);
+	state.addVillage(village);
+}
 
 		});
 
-
-
-
-
-
-
-
-		UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
-
-
-
-			if(!player.isSpectator()){
-				if(entity instanceof VillagerEntity && hand == Hand.MAIN_HAND && !world.isClient() && hitResult != null){
-					BlockPos pozycjawiochy = new BlockPos((int) entity.getX(),(int) entity.getY(),(int) entity.getZ());
-					Village wiocha = findNearbyVillage(pozycjawiochy,50);
-					if(wiocha ==null){
-						wiocha = new Village(pozycjawiochy,world);
-						State nowyKraj = new AIState(wiocha.getName() + " State");
-						allStates.add(nowyKraj);
-						nowyKraj.addVillage(wiocha);
-						allVillages.add(wiocha);
-						LOGGER.info("Liczba państw: " + VillageWars.allStates.size());
-					}
-					UUID owner = wiocha.getOwner();
-					if(owner == null){
-						owner = player.getUuid();
-						wiocha.setOwner(owner);
-						player.sendMessage(Text.literal("You just claimed this village"), false);
-
-					}else{
-						PlayerEntity ownerPlayer = SERVER.getPlayerManager().getPlayer(owner);
-						String nick;
-						if(ownerPlayer!=null){
-							nick = ownerPlayer.getName().getString();
-						}else{
-							nick = "nieznany";
-						}
-
-						player.sendMessage(Text.literal("This village is owned by " + nick), false);
-					}
-
-
-
-					LOGGER.info(wiocha.getName() +" ma "+wiocha.getVillagers().size()+" villagerów");
-
-
-
-
-
-				SERVER.getPlayerManager().broadcast(
-						Text.literal(entity.getName().getString()+ " is on coordinates " + (int) entity.getX()+" "+ (int) entity.getY()+" "+ (int) entity.getZ()+" "),false
-				);
-			}}
-
-
-			return ActionResult.PASS;
-		});
-
-		}
-
-	public static Village findNearbyVillage(BlockPos pos, double maxDistance) {
-		for(Village v : VillageWars.allVillages){
-			if(pos.getSquaredDistance(v.getPosition())<maxDistance*maxDistance){
-				return v;
-			}
-
-		}
-		return null;
 	}
+
+
+
+
+
+
+
+
+
+
+
 	}
