@@ -1,5 +1,9 @@
 {
   "entity.villagewars.light_infantry": "Light Infantry",
-  "entity.villagewars.heavy_infantry": "Heavy Infantry"
+  "entity.villagewars.heavy_infantry": "Heavy Infantry",
+  "entity.villagewars.archer": "Archer",
+  "entity.villagewars.militia": "Militia",
+  "entity.villagewars.spearman": "Spearman"
+
 
 }
