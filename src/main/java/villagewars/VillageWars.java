@@ -51,12 +51,7 @@ public class VillageWars implements ModInitializer {
 		ModEntities.registerAll();
 
 
-		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-			SERVER = server;
-			handler.player.sendMessage(
-					Text.literal("VillagerWars załadowany!"), false
-			);
-		});
+
 
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 
@@ -70,15 +65,7 @@ public class VillageWars implements ModInitializer {
 
 
 
-		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
-			SERVER.getPlayerManager().broadcast(
-					Text.literal(entity.getName().getString() + " died"),false
 
-			);
-			LOGGER.info("Typ encji: " + entity.getType());
-			LOGGER.info("Identifier: " + EntityType.getId(entity.getType()));
-
-		});
 
 
 		UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {

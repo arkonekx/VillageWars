@@ -51,8 +51,8 @@ public class VillageWarsClient implements ClientModInitializer {
                 )
         );
         EntityModelLayerRegistry.registerModelLayer(LIGHT_MODEL_LAYER, SoldierEntityModel::getTexturedModelData);
-        EntityModelLayerRegistry.registerModelLayer(HEAVY_MODEL_LAYER, ArcherModel::getTexturedModelData);
-        EntityModelLayerRegistry.registerModelLayer(ARCHER_MODEL_LAYER, HeavyInfantryModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(HEAVY_MODEL_LAYER, HeavyInfantryModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(ARCHER_MODEL_LAYER, ArcherModel::getTexturedModelData);
         EntityModelLayerRegistry.registerModelLayer(MILITIA_MODEL_LAYER,MilitiaModel::getTexturedModelData);
         EntityModelLayerRegistry.registerModelLayer(SPEARMAN_MODEL_LAYER,SpearmanModel::getTexturedModelData);
 
