@@ -3,7 +3,6 @@ package villagewars;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.render.entity.EntityRendererFactories;
-import net.minecraft.client.render.entity.VillagerEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.util.Identifier;
 
@@ -14,6 +13,10 @@ public class VillageWarsClient implements ClientModInitializer {
             new EntityModelLayer(Identifier.of(VillageWars.MOD_ID, "heavy_infantry"), "main");
     public static final EntityModelLayer ARCHER_MODEL_LAYER =
             new EntityModelLayer(Identifier.of(VillageWars.MOD_ID, "archer"), "main");
+    public static final EntityModelLayer MILITIA_MODEL_LAYER =
+            new EntityModelLayer(Identifier.of(VillageWars.MOD_ID, "militia"), "main");
+    public static final EntityModelLayer SPEARMAN_MODEL_LAYER =
+            new EntityModelLayer(Identifier.of(VillageWars.MOD_ID, "spearman"), "main");
 
     @Override
     public void onInitializeClient() {
@@ -35,9 +38,23 @@ public class VillageWarsClient implements ClientModInitializer {
                         new ArcherModel(ctx.getPart(ARCHER_MODEL_LAYER))
                 )
         );
+        EntityRendererFactories.register(ModEntities.MILITIA,
+                ctx -> new SoldierEntityRenderer<>(
+                        ctx,
+                        new MilitiaModel(ctx.getPart(MILITIA_MODEL_LAYER))
+                )
+        );
+        EntityRendererFactories.register(ModEntities.SPEARMAN,
+                ctx -> new SoldierEntityRenderer<>(
+                        ctx,
+                        new SpearmanModel(ctx.getPart(SPEARMAN_MODEL_LAYER))
+                )
+        );
         EntityModelLayerRegistry.registerModelLayer(LIGHT_MODEL_LAYER, SoldierEntityModel::getTexturedModelData);
         EntityModelLayerRegistry.registerModelLayer(HEAVY_MODEL_LAYER, ArcherModel::getTexturedModelData);
         EntityModelLayerRegistry.registerModelLayer(ARCHER_MODEL_LAYER, HeavyInfantryModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(MILITIA_MODEL_LAYER,MilitiaModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(SPEARMAN_MODEL_LAYER,SpearmanModel::getTexturedModelData);
 
     }
 }
