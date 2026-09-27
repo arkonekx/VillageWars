@@ -36,6 +36,9 @@ public class Archer extends Soldier implements RangedAttackMob {
         if (!(this.getEntityWorld() instanceof ServerWorld world)) {
             return;
         }
+        if (!hasBow()) {
+            return;
+        }
 
         ArrowEntity arrow = new ArrowEntity(this.getEntityWorld(),this,new ItemStack(Items.ARROW),null);
 
