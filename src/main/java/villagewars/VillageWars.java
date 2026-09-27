@@ -36,7 +36,7 @@ import java.util.*;
 
 public class VillageWars implements ModInitializer {
 
-	public static Map<State,UUID> states = new HashMap<>();
+	public static Map<UUID,State> states = new HashMap<>();
 	public static Map<VillageKey,UUID> owners = new HashMap<>();
 	public static Map<VillageKey, Village> villages = new HashMap<>();
 	public static final String MOD_ID = "villagewars";
@@ -57,13 +57,13 @@ public class VillageWars implements ModInitializer {
 		ModEntities.registerAll();
 
 
-//		ServerTickEvents.END_SERVER_TICK.register(server -> {
-//
-//			for (State s : owners) {
-//				s.tick();
-//			}
-//
-//		});
+		ServerTickEvents.END_SERVER_TICK.register(server -> {
+
+			for (State s : states.values()) {
+				s.tick();
+			}
+
+		});
 
 		ServerChunkEvents.CHUNK_LOAD.register((world, chunk)-> {
 
@@ -89,7 +89,7 @@ public class VillageWars implements ModInitializer {
 	UUID stateId = UUID.randomUUID();
 	State state = new AIState(stateId,village.getName()+" State");
 	owners.put(key,stateId);
-	states.put(state,stateId);
+	states.put(stateId,state);
 	state.addVillage(village);
 }
 

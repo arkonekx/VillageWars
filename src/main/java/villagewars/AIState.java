@@ -4,6 +4,7 @@ package villagewars;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -33,27 +34,30 @@ public class AIState extends State{
         return 10 + czynnikLosowy.nextInt(10);
     }
     public void tick(){
-//
-//        ticksUntilNextAction--;
-//        if(ticksUntilNextAction>0){
-//            return;
-//        }
-//
-//            List<State> neighbours = this.findNeighbours(VillageWars.allStates);
-//            State target = findBestTarget(neighbours);
-//        LOGGER.info("Target: " + (target != null ? target.getName() : "NULL"));
-//            if (target != null) {
-//                double score = calculateAttackScore(neighbours, target);
-//                LOGGER.info(String.valueOf(score));
-//
-//                if (score > 15) {  // próg do dostrojenia później
-//                    // atakuj
-//                    LOGGER.info(this.getName() + " atakuje " + target.getName());
-//
-//                }
-//            }
-//            ticksUntilNextAction = randomInterval();
-//
+
+        ticksUntilNextAction--;
+        if(ticksUntilNextAction>0){
+            return;
+        }
+            List<State> allStates = new ArrayList<>();
+        for (State s :VillageWars.states.values()) {
+            allStates.add(s);
+        }
+            List<State> neighbours = this.findNeighbours(allStates);
+            State target = findBestTarget(neighbours);
+        LOGGER.info("Target: " + (target != null ? target.getName() : "NULL"));
+            if (target != null) {
+                double score = calculateAttackScore(neighbours, target);
+                LOGGER.info(String.valueOf(score));
+
+                if (score > 15) {  // próg do dostrojenia później
+                    // atakuj
+                    LOGGER.info(this.getName() + " atakuje " + target.getName());
+
+                }
+            }
+            ticksUntilNextAction = randomInterval();
+
     }
 
 
