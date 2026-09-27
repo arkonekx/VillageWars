@@ -44,7 +44,7 @@ public class Archer extends Soldier implements RangedAttackMob {
         double dz = target.getZ() - arrow.getZ();
         double horizontalDistance = Math.sqrt(dx * dx + dz * dz);
 
-        arrow.setVelocity(dx,dy*0.2,dz,1.6F,1.0F);
+        arrow.setVelocity(dx,dy+horizontalDistance*0.2,dz,1.6F,1.0F);
 
         world.spawnEntity(arrow);
 
@@ -65,7 +65,7 @@ public class Archer extends Soldier implements RangedAttackMob {
 
                     @Override
                     public boolean shouldContinue() {
-                        return Archer.this.hasBow() && super.canStop();
+                        return Archer.this.hasBow() && super.shouldContinue();
                     }
                 }
         );
@@ -76,8 +76,8 @@ public class Archer extends Soldier implements RangedAttackMob {
             }
 
             @Override
-            public boolean canStop() {
-                return !Archer.this.hasBow() && super.canStop();
+            public boolean shouldContinue() {
+                return !Archer.this.hasBow() && super.shouldContinue();
             }
         });
         this.goalSelector.add(5,new WanderAroundFarGoal(this,0.8D));
