@@ -15,16 +15,17 @@ public class AIState extends State{
     private static final Logger LOGGER = LoggerFactory.getLogger("AIState");
     private int ticksUntilNextAction  = 0;
     private Personality personality;
-    private UUID stateId;
 
 
 
 
 
 
-    public AIState(UUID Id, String name) {
-        super(name);
-        this.stateId = Id;
+
+    public AIState(UUID stateId, String name) {
+        super(stateId,name);
+        setStateType(StateType.AI);
+
 
         Personality[] personalities = Personality.values();
         this.personality = personalities[ czynnikLosowy.nextInt(personalities.length)];
@@ -34,30 +35,30 @@ public class AIState extends State{
         return 10 + czynnikLosowy.nextInt(10);
     }
     public void tick(){
-
-        ticksUntilNextAction--;
-        if(ticksUntilNextAction>0){
-            return;
-        }
-            List<State> allStates = new ArrayList<>();
-        for (State s :VillageWars.states.values()) {
-            allStates.add(s);
-        }
-            List<State> neighbours = this.findNeighbours(allStates);
-            State target = findBestTarget(neighbours);
-        LOGGER.info("Target: " + (target != null ? target.getName() : "NULL"));
-            if (target != null) {
-                double score = calculateAttackScore(neighbours, target);
-                LOGGER.info(String.valueOf(score));
-
-                if (score > 15) {  // próg do dostrojenia później
-                    // atakuj
-                    LOGGER.info(this.getName() + " atakuje " + target.getName());
-
-                }
-            }
-            ticksUntilNextAction = randomInterval();
-
+//
+//        ticksUntilNextAction--;
+//        if(ticksUntilNextAction>0){
+//            return;
+//        }
+//            List<State> allStates = new ArrayList<>();
+//        for (State s :VillageWars.states.values()) {
+//            allStates.add(s);
+//        }
+//            List<State> neighbours = this.findNeighbours(allStates);
+//            State target = findBestTarget(neighbours);
+//        LOGGER.info("Target: " + (target != null ? target.getName() : "NULL"));
+//            if (target != null) {
+//                double score = calculateAttackScore(neighbours, target);
+//                LOGGER.info(String.valueOf(score));
+//
+//                if (score > 15) {  // próg do dostrojenia później
+//                    // atakuj
+//                    LOGGER.info(this.getName() + " atakuje " + target.getName());
+//
+//                }
+//            }
+//            ticksUntilNextAction = randomInterval();
+//
     }
 
 

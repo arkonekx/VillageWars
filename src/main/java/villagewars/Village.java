@@ -78,10 +78,11 @@ public class Village {
         this.idGracza = idGracza;
     }
 
+    public void setPozycja(BlockPos pozycja) {
+        this.pozycja = pozycja;
+    }
 
-
-
-
-
-
+    public void setName(String name) {
+        this.name = name;
+    }
 }
