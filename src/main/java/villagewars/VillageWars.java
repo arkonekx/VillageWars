@@ -64,14 +64,12 @@ public class VillageWars implements ModInitializer {
 	public State RebuildStateFromStateEntry(StateEntry stateEntry, Map<VillageKey,UUID> owners, Map<VillageKey, Village> villages){
 
 		State newState = switch (stateEntry.stateType()){
-            case AI -> new AIState(stateEntry.id(),stateEntry.name());
+            case AI -> new AIState(stateEntry.id(),stateEntry.name(),stateEntry.emeralds(),stateEntry.warList(),stateEntry.stateType(),stateEntry.personality().orElseThrow(() -> new IllegalStateException("AiState nie ma personality")));
 			case PLAYER ->
-				new PlayerState(stateEntry.id(), stateEntry.name(), stateEntry.playerId().orElseThrow(() -> new IllegalStateException("PlayerState nie ma playerId")));
+				new PlayerState(stateEntry.id(), stateEntry.name(),stateEntry.emeralds(),stateEntry.warList(),stateEntry.stateType(), stateEntry.playerId().orElseThrow(() -> new IllegalStateException("PlayerState nie ma playerId")));
 
 		};
-		newState.setEmeralds(stateEntry.emeralds());
-		newState.setWarList(stateEntry.warList());
-		newState.setIsAtWar(!stateEntry.warList().isEmpty());
+
 		List<VillageKey> villageKeys = new ArrayList<>();
 		for (var entry : owners.entrySet()){
 			if(entry.getValue().equals(newState.getStateId())){
@@ -153,7 +151,7 @@ public class VillageWars implements ModInitializer {
 
 	data.putVillage(key,village);
 	UUID stateId = UUID.randomUUID();
-	State state = new AIState(stateId,village.getName()+" State");
+	State state = new AIState(village.getName()+" State");
 	owners.put(key,stateId);
 	data.putOwner(key,stateId);
 	states.put(stateId,state);

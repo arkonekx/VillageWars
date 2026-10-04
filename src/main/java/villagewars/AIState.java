@@ -4,10 +4,7 @@ package villagewars;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 
 public class AIState extends State{
@@ -22,13 +19,18 @@ public class AIState extends State{
 
 
 
-    public AIState(UUID stateId, String name) {
-        super(stateId,name);
+    public AIState(String name) {
+        super(name);
         setStateType(StateType.AI);
+
 
 
         Personality[] personalities = Personality.values();
         this.personality = personalities[ czynnikLosowy.nextInt(personalities.length)];
+    }
+    public AIState(UUID stateId,String name, int emeralds, Set<UUID> warList,StateType stateType, Personality personality){
+        super(stateId,name,emeralds,warList,stateType);
+        this.personality = personality;
     }
     private int randomInterval(){
 

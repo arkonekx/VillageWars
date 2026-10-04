@@ -19,8 +19,9 @@ public abstract class State {
     private UUID stateId;
 
 
-    public State(UUID stateId, String name){
-        this.stateId = stateId;
+
+    public State(String name){
+        this.stateId = UUID.randomUUID();
         this.name = name;
 //        this.TERRITORY_RADIUS = 150;
         this.emeralds = 10;
@@ -29,6 +30,13 @@ public abstract class State {
         this.warList = new HashSet<>();
         this.stateType = this instanceof AIState ? StateType.AI : StateType.PLAYER;
 
+    }
+    public State(UUID stateId,String name, int emeralds, Set<UUID> warList, StateType stateType){
+        this.stateId = stateId;
+        this.name = name;
+        this.emeralds = emeralds;
+        this.warList = warList;
+        this.stateType = stateType;
     }
 
 
@@ -89,10 +97,10 @@ public abstract class State {
     }
 
     public void setWarList(Set<UUID> warList) {
-        this.warList = warList;
+        this.warList = new HashSet<>(warList);
     }
     public Set<UUID> getWarList() {
-        return warList;
+        return Set.copyOf(warList);
     }
 
     public void setStateType(StateType stateType) {

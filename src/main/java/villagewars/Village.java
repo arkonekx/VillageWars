@@ -1,7 +1,7 @@
 package villagewars;
-import net.minecraft.entity.EntityType;
+
 import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.predicate.entity.EntityPredicates;
+
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
@@ -18,7 +18,7 @@ public class Village {
     private List<VillagerEntity> villagers = new ArrayList<>();
     private BlockPos pozycja;
     private World world;
-    private UUID idGracza;
+
     static{
 
 
@@ -44,11 +44,10 @@ public class Village {
         this.world = world;
         this.villagers = new ArrayList<>();
 
-//        Vec3d pozycjaWek = new Vec3d(pozycja.getX(), pozycja.getY(), pozycja.getZ());
+
         double radius = 50.0;
         Box box = new Box(pozycja).expand(radius);
 
-        villagers = world.getEntitiesByType(EntityType.VILLAGER,box, EntityPredicates.VALID_ENTITY);
 
         RegistryEntry<Biome> biomEntry =  this.world.getBiome(this.pozycja);
         RegistryKey <Biome> biomKey = biomEntry.getKey().get();
@@ -62,6 +61,12 @@ public class Village {
         }
 
     }
+    public Village(BlockPos pozycja,World world,String name){
+        this.pozycja = pozycja;
+        this.world = world;
+        this.name = name;
+
+    }
     public String getName(){
         return this.name;
     }
@@ -71,12 +76,7 @@ public class Village {
     public BlockPos getPosition(){
         return this.pozycja;
     }
-    public UUID getOwner(){
-        return this.idGracza;
-    }
-    public void setOwner(UUID idGracza){
-        this.idGracza = idGracza;
-    }
+
 
     public void setPozycja(BlockPos pozycja) {
         this.pozycja = pozycja;
