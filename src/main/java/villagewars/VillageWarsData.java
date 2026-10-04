@@ -2,8 +2,6 @@ package villagewars;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.Uuids;
-import net.minecraft.util.dynamic.CodecCache;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateType;
 
@@ -52,7 +50,8 @@ public class VillageWarsData extends PersistentState {
     }
     public void putState(UUID stateId, State state){
         Optional<UUID> playerId = state instanceof PlayerState playerState ? Optional.of(playerState.getOwner()) : Optional.empty();
-        savedStates.put(stateId,new StateEntry(stateId,state.getName(),state.getEmeralds(),state.getWarList(),state.getStateType(),playerId));
+        Optional<Personality> personality = state instanceof AIState aiState ? Optional.of(aiState.getPersonality()) : Optional.empty();
+        savedStates.put(stateId,new StateEntry(stateId,state.getName(),state.getEmeralds(),state.getWarList(),state.getStateType(),playerId,personality));
         markDirty();
     }
     public VillageEntry getVillage(VillageKey village){

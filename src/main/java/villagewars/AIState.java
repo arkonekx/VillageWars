@@ -113,5 +113,11 @@ public class AIState extends State{
         return bestState;
     }
 
+    public Personality getPersonality() {
+        return personality;
+    }
 
+    public void setPersonality(Personality personality) {
+        this.personality = personality;
+    }
 }
