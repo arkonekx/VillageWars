@@ -54,10 +54,8 @@ public class VillageWars implements ModInitializer {
 
 
 
-	public Village RebuildVillageFromVillageEntry(VillageEntry villageEntry, World world){
-		Village newVillage = new Village(villageEntry.pozycja(),world);
-		newVillage.setName(villageEntry.name());
-		return newVillage;
+	public Village RebuildVillageFromVillageEntry(VillageEntry villageEntry, World world,String name){
+		return new Village(villageEntry.pozycja(),world,name);
 	}
 
 
@@ -100,7 +98,7 @@ public class VillageWars implements ModInitializer {
 
 
 			for(VillageEntry v : data.getVillageEntries()){
-				villages.put(v.village(),RebuildVillageFromVillageEntry(v,server.getWorld(v.village().Dimension())));
+				villages.put(v.village(),RebuildVillageFromVillageEntry(v,server.getWorld(v.village().Dimension()),v.name()));
 			}
 
 			for (StateEntry s : data.getStateEntries()){
@@ -145,13 +143,13 @@ public class VillageWars implements ModInitializer {
 
 
     Village village = new Village(center, world);
-
     villages.put(key, village);
 
 
 	data.putVillage(key,village);
-	UUID stateId = UUID.randomUUID();
 	State state = new AIState(village.getName()+" State");
+	UUID stateId = state.getStateId();
+
 	owners.put(key,stateId);
 	data.putOwner(key,stateId);
 	states.put(stateId,state);

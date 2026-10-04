@@ -37,6 +37,7 @@ public abstract class State {
         this.emeralds = emeralds;
         this.warList = warList;
         this.stateType = stateType;
+        this.villages = new ArrayList<>();
     }
 
 
