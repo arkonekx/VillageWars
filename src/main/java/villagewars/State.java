@@ -35,9 +35,10 @@ public abstract class State {
         this.stateId = stateId;
         this.name = name;
         this.emeralds = emeralds;
-        this.warList = warList;
+        this.warList = new HashSet<>(warList);
         this.stateType = stateType;
         this.villages = new ArrayList<>();
+        this.isAtWar = !warList.isEmpty();
     }
 
 
