@@ -66,7 +66,7 @@ public class Village {
         this.pozycja = pozycja;
         this.world = world;
         this.name = name;
-        this.residentId = residentId;
+        this.residentId = new HashSet<>(residentId);
 
 
     }
@@ -88,8 +88,8 @@ public class Village {
     public void setName(String name) {
         this.name = name;
     }
-    public void addResidentId(UUID residentId){
-        this.residentId.add(residentId);
+    public boolean addResidentId(UUID residentId) {
+        return this.residentId.add(residentId);
     }
     public void removeResidentId(UUID residentId){
         this.residentId.remove(residentId);

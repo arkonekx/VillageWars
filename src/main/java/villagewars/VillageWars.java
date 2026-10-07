@@ -49,8 +49,35 @@ public class VillageWars implements ModInitializer {
 			Village village = villages.get(villager.getAttached(Village_ATTACHMENT));
 			if(village!=null){
 				village.addLoadedVillager(villager);
-				village.addResidentId(villager.getUuid());
+				if (village.addResidentId(villager.getUuid())) {
+					VillageKey key = findVillageKey(village);
+
+					if (key != null) {
+						VillageWarsData data = world.getServer().getOverworld()
+								.getPersistentStateManager()
+								.getOrCreate(VillageWarsData.TYPE);
+
+						data.putVillage(key, village);
+					}
+				}
+			}else{
+				village = findNearestVillage(villager.getBlockPos(),150D,world);
+				if(village!=null){
+					village.addLoadedVillager(villager);
+					if (village.addResidentId(villager.getUuid())) {
+						VillageKey key = findVillageKey(village);
+
+						if (key != null) {
+							VillageWarsData data = world.getServer().getOverworld()
+									.getPersistentStateManager()
+									.getOrCreate(VillageWarsData.TYPE);
+
+							data.putVillage(key, village);
+						}
+					}
+				}
 			}
+
 		}else{
 			Village village = findNearestVillage(villager.getBlockPos(),150D,world);
 			if(village!=null){
@@ -163,13 +190,7 @@ public class VillageWars implements ModInitializer {
 		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
 			if(entity instanceof VillagerEntity villager){
 				registerVillager(villager,world);
-				for(Village v: villages.values()){
-					for(UUID v1 : v.getResidentId()){
-						if(v1.equals(villager.getUuid())){
-							LOGGER.info(villager.getUuidAsString()+" - "+v.getName());
-						}
-					}
-				}
+
 
 
 			}
