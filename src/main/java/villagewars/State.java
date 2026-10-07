@@ -2,8 +2,6 @@ package villagewars;
 
 
 
-import com.llamalad7.mixinextras.lib.antlr.runtime.misc.Array2DHashSet;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -81,7 +79,7 @@ public abstract class State {
     public int getTotalVillagers(){
         int total = 0;
         for(Village v: this.villages){
-            total += v.getVillagers().size();
+            total += v.getResidentId().size();
         }
         return total;
     }

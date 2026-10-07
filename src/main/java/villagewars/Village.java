@@ -15,7 +15,8 @@ import java.util.*;
 public class Village {
     public static Map<RegistryKey<Biome>,List<String>> nazwyWiosek = new HashMap<>();
     private String name;
-    private List<VillagerEntity> villagers = new ArrayList<>();
+    private Set<UUID> residentId = new HashSet<>();
+    private final Set<VillagerEntity> loadedVillagers = new HashSet<>();
     private BlockPos pozycja;
     private World world;
 
@@ -42,7 +43,7 @@ public class Village {
     public Village(BlockPos pozycja, World world){
         this.pozycja = pozycja;
         this.world = world;
-        this.villagers = new ArrayList<>();
+
 
 
         double radius = 50.0;
@@ -61,22 +62,24 @@ public class Village {
         }
 
     }
-    public Village(BlockPos pozycja,World world,String name){
+    public Village(BlockPos pozycja,World world,String name,Set<UUID> residentId){
         this.pozycja = pozycja;
         this.world = world;
         this.name = name;
+        this.residentId = residentId;
+
 
     }
     public String getName(){
         return this.name;
     }
-    public List<VillagerEntity> getVillagers(){
-        return this.villagers;
-    }
     public BlockPos getPosition(){
         return this.pozycja;
     }
 
+    public Set<UUID> getResidentId(){
+        return Set.copyOf(this.residentId);
+    }
 
     public void setPozycja(BlockPos pozycja) {
         this.pozycja = pozycja;
@@ -84,5 +87,22 @@ public class Village {
 
     public void setName(String name) {
         this.name = name;
+    }
+    public void addResidentId(UUID residentId){
+        this.residentId.add(residentId);
+    }
+    public void removeResidentId(UUID residentId){
+        this.residentId.remove(residentId);
+    }
+
+    public void addLoadedVillager(VillagerEntity villager){
+        this.loadedVillagers.add(villager);
+    }
+    public void removeLoadedVillager(VillagerEntity villager){
+        this.loadedVillagers.remove(villager);
+    }
+
+    public World getWorld(){
+        return this.world;
     }
 }

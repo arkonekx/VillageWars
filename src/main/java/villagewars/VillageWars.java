@@ -5,30 +5,19 @@ import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.event.player.UseEntityCallback;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.StructureTags;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureStart;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,16 +35,61 @@ public class VillageWars implements ModInitializer {
 			Identifier.of(MOD_ID, "owner_state"),
 			builder -> builder.persistent(Codec.STRING)
 	);
+	public static final AttachmentType<VillageKey> Village_ATTACHMENT = AttachmentRegistry.create(
+			Identifier.of(MOD_ID, "village"),
+			builder -> builder.persistent(VillageKey.CODEC)
+	);
 	public static MinecraftServer SERVER;
-	// This logger is used to write text to the console and the log file.
-	// It is considered best practice to use your mod id as the logger's name.
-	// That way, it's clear which mod wrote info, warnings, and errors.
+
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 
+	public static void registerVillager(VillagerEntity villager,ServerWorld world ){
+		if(villager.hasAttached(VillageWars.Village_ATTACHMENT)){
+			Village village = villages.get(villager.getAttached(Village_ATTACHMENT));
+			if(village!=null){
+				village.addLoadedVillager(villager);
+				village.addResidentId(villager.getUuid());
+			}
+		}else{
+			Village village = findNearestVillage(villager.getBlockPos(),150D,world);
+			if(village!=null){
+				village.addLoadedVillager(villager);
+				village.addResidentId(villager.getUuid());
+				villager.setAttached(Village_ATTACHMENT,findVillageKey(village));
+			}
 
-	public Village RebuildVillageFromVillageEntry(VillageEntry villageEntry, World world,String name){
-		return new Village(villageEntry.pozycja(),world,name);
+		}
+	}
+
+	public static Village findNearestVillage(BlockPos startPosition, double maxDistance,ServerWorld world){
+		double max = maxDistance * maxDistance;
+		Village village = null;
+		for(Village v: villages.values()){
+			double distance = v.getPosition().getSquaredDistance(startPosition);
+			if(!v.getWorld().getRegistryKey().equals(world.getRegistryKey())){
+				continue;
+			}
+
+			if(max > distance){
+				max = distance;
+				village = v;
+			}
+		}
+		return village;
+	}
+
+	@Nullable
+	public static VillageKey findVillageKey(Village village) {
+		for (var entry : villages.entrySet()) {
+			if (entry.getValue() == village) {
+				return entry.getKey();
+			}
+		}
+		return null;
+	}
+	public Village RebuildVillageFromVillageEntry(VillageEntry villageEntry, World world){
+		return new Village(villageEntry.pozycja(),world,villageEntry.name(),villageEntry.residentId());
 	}
 
 
@@ -89,16 +123,24 @@ public class VillageWars implements ModInitializer {
 		ModEntities.registerAll();
 
 
-		ServerLifecycleEvents.SERVER_STARTED.register(server ->{
-			VillageWarsData data = server.getOverworld().getPersistentStateManager().getOrCreate(VillageWarsData.TYPE);
+
+		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
 			villages.clear();
 			states.clear();
+			owners.clear();
+		});
+
+
+		ServerLifecycleEvents.SERVER_STARTED.register(server ->{
+			VillageWarsData data = server.getOverworld().getPersistentStateManager().getOrCreate(VillageWarsData.TYPE);
+
 
 			owners = new HashMap<>(data.getOwnerEntries());
 
 
 			for(VillageEntry v : data.getVillageEntries()){
-				villages.put(v.village(),RebuildVillageFromVillageEntry(v,server.getWorld(v.village().Dimension()),v.name()));
+				villages.put(v.village(),RebuildVillageFromVillageEntry(v,server.getWorld(v.village().Dimension())));
+				LOGGER.info("Wioska "+v.pozycja());
 			}
 
 			for (StateEntry s : data.getStateEntries()){
@@ -106,6 +148,41 @@ public class VillageWars implements ModInitializer {
 			}
 			LOGGER.info("Wczytano {} państw i {} wiosek",states.size(), villages.size());
 
+			for (ServerWorld world : server.getWorlds()) {
+				for (var entity : world.iterateEntities()) {
+					if (entity instanceof VillagerEntity villager) {
+						registerVillager(villager, world);
+					}
+				}
+			}
+
+
+
+		});
+
+		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
+			if(entity instanceof VillagerEntity villager){
+				registerVillager(villager,world);
+				for(Village v: villages.values()){
+					for(UUID v1 : v.getResidentId()){
+						if(v1.equals(villager.getUuid())){
+							LOGGER.info(villager.getUuidAsString()+" - "+v.getName());
+						}
+					}
+				}
+
+
+			}
+
+
+		});
+		ServerEntityEvents.ENTITY_UNLOAD.register((entity, world) -> {
+			if(!(entity instanceof VillagerEntity villager) ){return;}
+
+				VillageKey villageKey = villager.getAttached(Village_ATTACHMENT);
+				if(villageKey == null){return;}
+			Village village = villages.get(villageKey);
+				if(village!=null){village.removeLoadedVillager(villager);}
 
 
 
@@ -155,6 +232,11 @@ public class VillageWars implements ModInitializer {
 	states.put(stateId,state);
 	state.addVillage(village);
 	data.putState(stateId,state);
+	for (var entity : world.iterateEntities()){
+		if(entity instanceof VillagerEntity villager){
+			registerVillager(villager,world);
+		}
+	}
 	LOGGER.debug("Utworzono wioskę: key={}, stateId={}", key, stateId);
 }
 

@@ -58,7 +58,7 @@ public class VillageWarsData extends PersistentState {
         return savedVillages.get(village);
     }
     public void putVillage(VillageKey villageKey, Village village){
-        savedVillages.put(villageKey,new VillageEntry(villageKey,village.getName(),village.getPosition()));
+        savedVillages.put(villageKey,new VillageEntry(villageKey,village.getName(),village.getPosition(),village.getResidentId()));
         markDirty();
     }
     public Collection<StateEntry> getStateEntries(){
