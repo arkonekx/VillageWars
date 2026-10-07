@@ -44,48 +44,30 @@ public class VillageWars implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 
-	public static void registerVillager(VillagerEntity villager,ServerWorld world ){
-		if(villager.hasAttached(VillageWars.Village_ATTACHMENT)){
-			Village village = villages.get(villager.getAttached(Village_ATTACHMENT));
-			if(village!=null){
-				village.addLoadedVillager(villager);
-				if (village.addResidentId(villager.getUuid())) {
-					VillageKey key = findVillageKey(village);
+	public static void registerVillager(
+			VillagerEntity villager, ServerWorld world) {
 
-					if (key != null) {
-						VillageWarsData data = world.getServer().getOverworld()
-								.getPersistentStateManager()
-								.getOrCreate(VillageWarsData.TYPE);
+		VillageKey key = villager.getAttached(Village_ATTACHMENT);
+		Village village = villages.get(key);
 
-						data.putVillage(key, village);
-					}
-				}
-			}else{
-				village = findNearestVillage(villager.getBlockPos(),150D,world);
-				if(village!=null){
-					village.addLoadedVillager(villager);
-					if (village.addResidentId(villager.getUuid())) {
-						VillageKey key = findVillageKey(village);
+		if (village == null) {
+			village = findNearestVillage(villager.getBlockPos(), 150D, world);
+			if (village == null) return;
 
-						if (key != null) {
-							VillageWarsData data = world.getServer().getOverworld()
-									.getPersistentStateManager()
-									.getOrCreate(VillageWarsData.TYPE);
+			key = findVillageKey(village);
+			if (key == null) return;
 
-							data.putVillage(key, village);
-						}
-					}
-				}
-			}
+			villager.setAttached(Village_ATTACHMENT, key);
+		}
 
-		}else{
-			Village village = findNearestVillage(villager.getBlockPos(),150D,world);
-			if(village!=null){
-				village.addLoadedVillager(villager);
-				village.addResidentId(villager.getUuid());
-				villager.setAttached(Village_ATTACHMENT,findVillageKey(village));
-			}
+		village.addLoadedVillager(villager);
 
+		if (village.addResidentId(villager.getUuid())) {
+			VillageWarsData data = world.getServer().getOverworld()
+					.getPersistentStateManager()
+					.getOrCreate(VillageWarsData.TYPE);
+
+			data.putVillage(key, village);
 		}
 	}
 
