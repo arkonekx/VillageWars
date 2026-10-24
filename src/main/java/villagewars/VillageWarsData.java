@@ -44,8 +44,8 @@ public class VillageWarsData extends PersistentState {
             OwnerEntry.CODEC.listOf().fieldOf("owners").forGetter(data -> data.savedOwners.entrySet().stream().map(entry -> new OwnerEntry(entry.getKey(),entry.getValue())).toList()),
             StateEntry.CODEC.listOf().fieldOf("states").forGetter(data -> new ArrayList<>(data.savedStates.values())),
                     VillageEntry.CODEC.listOf().fieldOf("villages").forGetter(data -> new ArrayList<>(data.savedVillages.values())),
-                    TerritoryEntry.CODEC.listOf().fieldOf("territories").forGetter(data -> new ArrayList<>(data.savedTerritories.values())),
-                    TerritoryKey.CODEC.listOf().fieldOf("Checked territories").forGetter(data -> new ArrayList<>(data.checkedCandidates))
+                    TerritoryEntry.CODEC.listOf().optionalFieldOf("territories", List.of()).forGetter(data -> new ArrayList<>(data.savedTerritories.values())),
+                    TerritoryKey.CODEC.listOf().optionalFieldOf("Checked territories",List.of()).forGetter(data -> new ArrayList<>(data.checkedCandidates))
 
             )
 
@@ -89,7 +89,9 @@ public class VillageWarsData extends PersistentState {
         }
     }
     public void putCheckedCandidates(TerritoryKey territoryKey){
-        checkedCandidates.add(territoryKey);
+        if(checkedCandidates.add(territoryKey)){
+            markDirty();
+        }
     }
     public void removeCheckedCandidate(TerritoryKey key) {
         if (checkedCandidates.remove(key)) {

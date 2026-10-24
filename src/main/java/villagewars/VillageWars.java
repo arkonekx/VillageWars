@@ -263,7 +263,7 @@ public class VillageWars implements ModInitializer {
 			TerritoryAssignment newAssignment = new TerritoryAssignment(Optional.ofNullable(villageKey),TerritoryStatus.CONFIRMED);
 			data.putTerritory(key,newAssignment);
 			territories.put(key,newAssignment);
-
+			LOGGER.info("Terytorium zatwierdzone {}",key);
 			return true;
 
 
